@@ -1,0 +1,52 @@
+[project]
+name = "pulse-invest-backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "langchain",
+    "langchain-groq",
+    "langchain-community",
+    "yfinance",
+    "newsapi-python",
+    "duckduckgo-search",
+    "asyncpg",
+    "sqlalchemy[asyncio]",
+    "alembic",
+    "pydantic",
+    "pydantic-settings",
+    "python-dotenv",
+    "httpx",
+    "ddgs>=9.14.4",
+    "langchain-core>=1.4.1",
+    "langgraph>=1.2.4",
+    "langchain-classic>=1.0.7",
+    "psycopg2-binary>=2.9.12",
+    "email-validator>=2.3.0",
+    "python-jose[cryptography]>=3.5.0",
+    "passlib>=1.7.4",
+    "python-multipart>=0.0.32",
+    "bcrypt>=5.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "httpx",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+    "pytest-asyncio",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]

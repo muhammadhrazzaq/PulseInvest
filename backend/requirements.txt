@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+langchain
+langchain-groq
+langchain-community
+yfinance
+newsapi-python
+duckduckgo-search
+aiosqlite
+pydantic
+python-dotenv
+httpx
