@@ -1,8 +1,8 @@
 import yfinance as yf
 from datetime import datetime, timedelta
 
-class YahooFinanceService:
 
+class YahooFinanceService:
     def get_price(self, ticker: str) -> dict:
         try:
             stock = yf.Ticker(ticker)
@@ -76,5 +76,6 @@ class YahooFinanceService:
             ]
         except Exception as e:
             return [{"error": str(e)}]
+
 
 yahoo_finance = YahooFinanceService()

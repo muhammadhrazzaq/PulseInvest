@@ -26,10 +26,7 @@ async def get_stock(ticker: str):
 
 
 @router.get("/stock/{ticker}/history")
-async def get_stock_history(
-    ticker: str,
-    days: int = Query(default=30, ge=7, le=365)
-):
+async def get_stock_history(ticker: str, days: int = Query(default=30, ge=7, le=365)):
     """Stock price history for charting. days param: 7, 30, 90, 180, 365."""
     history = await asyncio.to_thread(yahoo_finance.get_history, ticker, days)
     return {"ticker": ticker.upper(), "days": days, "history": history}
@@ -61,10 +58,7 @@ async def get_crypto(coin: str):
 
 
 @router.get("/crypto/{coin}/history")
-async def get_crypto_history(
-    coin: str,
-    days: int = Query(default=30, ge=7, le=365)
-):
+async def get_crypto_history(coin: str, days: int = Query(default=30, ge=7, le=365)):
     """Crypto price history for charting."""
     history = await coingecko.get_history(coin, days)
     return {"coin": coin.upper(), "days": days, "history": history}

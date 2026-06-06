@@ -60,7 +60,9 @@ async def get_morning_briefing(db: AsyncSession = Depends(get_db)):
         all_tickers[ticker] = asset_type
 
     # 4. fetch all prices + market news concurrently
-    price_tasks = [fetch_price(ticker, asset_type) for ticker, asset_type in all_tickers.items()]
+    price_tasks = [
+        fetch_price(ticker, asset_type) for ticker, asset_type in all_tickers.items()
+    ]
     market_news_task = asyncio.to_thread(news_service.get_market_news)
 
     results = await asyncio.gather(*price_tasks, market_news_task)
@@ -68,10 +70,13 @@ async def get_morning_briefing(db: AsyncSession = Depends(get_db)):
     market_news = results[-1]
 
     # 5. build context string for agent
-    prices_text = "\n".join([
-        f"  {p['ticker']}: ${p['price']} | Change: {round(p['change_24h'] or 0, 2)}%"
-        for p in prices if p.get("price")
-    ])
+    prices_text = "\n".join(
+        [
+            f"  {p['ticker']}: ${p['price']} | Change: {round(p['change_24h'] or 0, 2)}%"
+            for p in prices
+            if p.get("price")
+        ]
+    )
 
     news_text = news_service.format_for_llm(market_news)
 

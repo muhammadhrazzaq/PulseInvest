@@ -4,7 +4,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 from pydantic import BaseModel
 from db.database import get_db
-from db.models import User, UserRole, Session as DBSession, ChatMessage, Trade, Watchlist
+from db.models import (
+    User,
+    UserRole,
+    Session as DBSession,
+    ChatMessage,
+    Trade,
+    Watchlist,
+)
 from services.auth import get_current_admin
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -56,14 +63,20 @@ async def get_stats(
     today = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
 
     # counts
-    total_users     = await db.execute(select(func.count(User.id)))
+    total_users = await db.execute(select(func.count(User.id)))
     active_users = await db.execute(select(func.count(User.id)).where(User.is_active))
-    admin_users     = await db.execute(select(func.count(User.id)).where(User.role == UserRole.admin))
-    total_trades    = await db.execute(select(func.count(Trade.id)))
-    total_messages  = await db.execute(select(func.count(ChatMessage.id)))
-    total_sessions  = await db.execute(select(func.count(DBSession.id)))
-    new_users_today = await db.execute(select(func.count(User.id)).where(User.created_at >= today))
-    new_trades_today = await db.execute(select(func.count(Trade.id)).where(Trade.created_at >= today))
+    admin_users = await db.execute(
+        select(func.count(User.id)).where(User.role == UserRole.admin)
+    )
+    total_trades = await db.execute(select(func.count(Trade.id)))
+    total_messages = await db.execute(select(func.count(ChatMessage.id)))
+    total_sessions = await db.execute(select(func.count(DBSession.id)))
+    new_users_today = await db.execute(
+        select(func.count(User.id)).where(User.created_at >= today)
+    )
+    new_trades_today = await db.execute(
+        select(func.count(Trade.id)).where(Trade.created_at >= today)
+    )
 
     return PlatformStats(
         total_users=total_users.scalar() or 0,
@@ -77,21 +90,17 @@ async def get_stats(
     )
 
 
-
 @router.get("/users", response_model=list[UserSummary])
 async def get_users(
     admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db),
 ):
     """List all users with activity summary."""
-    result = await db.execute(
-        select(User).order_by(desc(User.created_at))
-    )
+    result = await db.execute(select(User).order_by(desc(User.created_at)))
     users = result.scalars().all()
 
     summaries = []
     for user in users:
-
         trades_count = await db.execute(
             select(func.count(Trade.id)).where(Trade.user_id == user.id)
         )
@@ -104,21 +113,22 @@ async def get_users(
             select(func.count(DBSession.id)).where(DBSession.user_id == user.id)
         )
 
-        summaries.append(UserSummary(
-            id=user.id,
-            email=user.email,
-            username=user.username,
-            role=user.role,
-            is_active=user.is_active,
-            created_at=user.created_at,
-            last_login=user.last_login,
-            total_trades=trades_count.scalar() or 0,
-            total_messages=messages_count.scalar() or 0,
-            total_sessions=sessions_count.scalar() or 0,
-        ))
+        summaries.append(
+            UserSummary(
+                id=user.id,
+                email=user.email,
+                username=user.username,
+                role=user.role,
+                is_active=user.is_active,
+                created_at=user.created_at,
+                last_login=user.last_login,
+                total_trades=trades_count.scalar() or 0,
+                total_messages=messages_count.scalar() or 0,
+                total_sessions=sessions_count.scalar() or 0,
+            )
+        )
 
     return summaries
-
 
 
 @router.get("/users/{user_id}", response_model=UserDetail)
@@ -199,7 +209,6 @@ async def get_user_detail(
     )
 
 
-
 @router.patch("/users/{user_id}/disable")
 async def disable_user(
     user_id: int,
@@ -238,6 +247,7 @@ async def enable_user(
 
 
 # ── Promote / demote ──────────────────────────────────────────────────────────
+
 
 @router.patch("/users/{user_id}/promote")
 async def promote_to_admin(
@@ -279,7 +289,6 @@ async def demote_from_admin(
     return {"message": f"{user.username} demoted to user"}
 
 
-
 @router.delete("/users/{user_id}")
 async def delete_user(
     user_id: int,
@@ -300,7 +309,6 @@ async def delete_user(
 
     await db.delete(user)
     return {"message": f"{user.username} permanently deleted"}
-
 
 
 @router.get("/activity")
@@ -348,10 +356,8 @@ async def get_recent_activity(
     ]
 
     # merge and sort by created_at
-    activity = sorted(
-        trades + messages,
-        key=lambda x: x["created_at"],
-        reverse=True
-    )[:limit]
+    activity = sorted(trades + messages, key=lambda x: x["created_at"], reverse=True)[
+        :limit
+    ]
 
     return activity

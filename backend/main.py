@@ -9,6 +9,7 @@ from api.briefing import router as briefing_router
 from api.auth import router as auth_router
 from api.admin import router as admin_router
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
@@ -18,11 +19,8 @@ async def lifespan(app: FastAPI):
     await engine.dispose()
     print("Shutting down...")
 
-app = FastAPI(
-    title="PulseInvest API",
-    version="0.1.0",
-    lifespan=lifespan
-)
+
+app = FastAPI(title="PulseInvest API", version="0.1.0", lifespan=lifespan)
 
 app.include_router(chat_router)
 app.include_router(portfolio_router)
@@ -30,6 +28,7 @@ app.include_router(market_router)
 app.include_router(briefing_router)
 app.include_router(auth_router)
 app.include_router(admin_router)
+
 
 @app.get("/health")
 async def health():

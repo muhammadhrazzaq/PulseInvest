@@ -22,8 +22,8 @@ COIN_ID_MAP = {
     "xlm": "stellar",
 }
 
-class CoinGeckoService:
 
+class CoinGeckoService:
     def _resolve_id(self, coin: str) -> str:
         """Convert ticker symbol to CoinGecko coin id"""
         return COIN_ID_MAP.get(coin.lower(), coin.lower())
@@ -41,7 +41,7 @@ class CoinGeckoService:
                         "include_market_cap": "true",
                         "include_24hr_vol": "true",
                     },
-                    timeout=10.0
+                    timeout=10.0,
                 )
                 response.raise_for_status()
                 data = response.json()
@@ -75,7 +75,7 @@ class CoinGeckoService:
                         "community_data": "false",
                         "developer_data": "false",
                     },
-                    timeout=10.0
+                    timeout=10.0,
                 )
                 response.raise_for_status()
                 data = response.json()
@@ -112,14 +112,16 @@ class CoinGeckoService:
                         "days": days,
                         "interval": "daily" if days > 7 else "hourly",
                     },
-                    timeout=10.0
+                    timeout=10.0,
                 )
                 response.raise_for_status()
                 data = response.json()
 
                 return [
                     {
-                        "date": datetime.fromtimestamp(point[0] / 1000).strftime("%Y-%m-%d"),
+                        "date": datetime.fromtimestamp(point[0] / 1000).strftime(
+                            "%Y-%m-%d"
+                        ),
                         "price": round(point[1], 6),
                     }
                     for point in data.get("prices", [])
@@ -132,20 +134,23 @@ class CoinGeckoService:
     async def get_market_overview(self) -> dict:
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.get(
-                    f"{COINGECKO_BASE}/global",
-                    timeout=10.0
-                )
+                response = await client.get(f"{COINGECKO_BASE}/global", timeout=10.0)
                 response.raise_for_status()
                 data = response.json().get("data", {})
 
                 return {
                     "total_market_cap_usd": data.get("total_market_cap", {}).get("usd"),
                     "total_volume_usd": data.get("total_volume", {}).get("usd"),
-                    "btc_dominance": round(data.get("market_cap_percentage", {}).get("btc", 0), 2),
-                    "eth_dominance": round(data.get("market_cap_percentage", {}).get("eth", 0), 2),
+                    "btc_dominance": round(
+                        data.get("market_cap_percentage", {}).get("btc", 0), 2
+                    ),
+                    "eth_dominance": round(
+                        data.get("market_cap_percentage", {}).get("eth", 0), 2
+                    ),
                     "active_coins": data.get("active_cryptocurrencies"),
-                    "market_cap_change_24h": data.get("market_cap_change_percentage_24h_usd"),
+                    "market_cap_change_24h": data.get(
+                        "market_cap_change_percentage_24h_usd"
+                    ),
                 }
         except Exception as e:
             return {"error": str(e)}
@@ -154,9 +159,7 @@ class CoinGeckoService:
         try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
-                    f"{COINGECKO_BASE}/search",
-                    params={"query": query},
-                    timeout=10.0
+                    f"{COINGECKO_BASE}/search", params={"query": query}, timeout=10.0
                 )
                 response.raise_for_status()
                 data = response.json()
@@ -172,5 +175,6 @@ class CoinGeckoService:
                 ]
         except Exception as e:
             return [{"error": str(e)}]
+
 
 coingecko = CoinGeckoService()

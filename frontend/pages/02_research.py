@@ -17,10 +17,14 @@ st.title("🔍 Research")
 col1, col2, col3 = st.columns([2, 1, 1])
 
 with col1:
-    ticker = st.text_input(
-        "Enter ticker or coin",
-        placeholder="AAPL, NVDA, BTC, ETH...",
-    ).upper().strip()
+    ticker = (
+        st.text_input(
+            "Enter ticker or coin",
+            placeholder="AAPL, NVDA, BTC, ETH...",
+        )
+        .upper()
+        .strip()
+    )
 
 with col2:
     asset_type = st.selectbox("Asset type", ["stock", "crypto"])
@@ -33,11 +37,13 @@ search = st.button("Research", use_container_width=True, type="primary")
 # ── Fetch + render ────────────────────────────────────────────────────────────
 
 if search and ticker:
-    endpoint = f"{API_URL}/market/{'stock' if asset_type == 'stock' else 'crypto'}/{ticker}"
+    endpoint = (
+        f"{API_URL}/market/{'stock' if asset_type == 'stock' else 'crypto'}/{ticker}"
+    )
 
     with st.spinner(f"Fetching data for {ticker}..."):
         try:
-            r = requests.get(endpoint, headers=get_headers(),  timeout=20)
+            r = requests.get(endpoint, headers=get_headers(), timeout=20)
             data = r.json()
         except Exception as e:
             st.error(f"Failed to fetch data: {e}")
@@ -62,7 +68,7 @@ if search and ticker:
     col1.metric(
         "Price",
         f"${price:,.4f}" if price else "N/A",
-        f"{change:+.2f}%" if change else None
+        f"{change:+.2f}%" if change else None,
     )
 
     if asset_type == "stock":
@@ -71,11 +77,10 @@ if search and ticker:
         col4.metric("Analyst Target", f"${info_data.get('analyst_target') or 'N/A'}")
     else:
         col2.metric("Market Cap Rank", f"#{info_data.get('market_cap_rank') or 'N/A'}")
-        col3.metric("ATH", f"${info_data.get('ath'):,.2f}" if info_data.get("ath") else "N/A")
-        col4.metric(
-            "Sentiment 👍",
-            f"{info_data.get('sentiment_up') or 0:.1f}%"
+        col3.metric(
+            "ATH", f"${info_data.get('ath'):,.2f}" if info_data.get("ath") else "N/A"
         )
+        col4.metric("Sentiment 👍", f"{info_data.get('sentiment_up') or 0:.1f}%")
 
     st.divider()
 
@@ -91,18 +96,24 @@ if search and ticker:
 
             if asset_type == "stock" and "open" in df.columns:
                 # candlestick for stocks
-                fig = go.Figure(data=[go.Candlestick(
-                    x=df["date"],
-                    open=df["open"],
-                    high=df["high"],
-                    low=df["low"],
-                    close=df["close"],
-                    name=ticker,
-                )])
+                fig = go.Figure(
+                    data=[
+                        go.Candlestick(
+                            x=df["date"],
+                            open=df["open"],
+                            high=df["high"],
+                            low=df["low"],
+                            close=df["close"],
+                            name=ticker,
+                        )
+                    ]
+                )
             else:
                 # line chart for crypto
                 fig = px.line(
-                    df, x="date", y="price",
+                    df,
+                    x="date",
+                    y="price",
                     title=f"{ticker} — {days}d Price",
                 )
 
@@ -122,18 +133,30 @@ if search and ticker:
             fields = {
                 "Sector": info_data.get("sector"),
                 "Industry": info_data.get("industry"),
-                "52W High": f"${info_data.get('52w_high'):,.2f}" if info_data.get("52w_high") else None,
-                "52W Low": f"${info_data.get('52w_low'):,.2f}" if info_data.get("52w_low") else None,
+                "52W High": f"${info_data.get('52w_high'):,.2f}"
+                if info_data.get("52w_high")
+                else None,
+                "52W Low": f"${info_data.get('52w_low'):,.2f}"
+                if info_data.get("52w_low")
+                else None,
                 "Dividend Yield": f"{info_data.get('dividend_yield') or 0:.2%}",
                 "Recommendation": info_data.get("recommendation", "").upper(),
             }
         else:
             fields = {
                 "Symbol": info_data.get("symbol"),
-                "ATH Date": info_data.get("ath_date", "")[:10] if info_data.get("ath_date") else None,
-                "ATL": f"${info_data.get('atl'):,.4f}" if info_data.get("atl") else None,
-                "Circulating Supply": f"{info_data.get('circulating_supply'):,.0f}" if info_data.get("circulating_supply") else None,
-                "Total Supply": f"{info_data.get('total_supply'):,.0f}" if info_data.get("total_supply") else None,
+                "ATH Date": info_data.get("ath_date", "")[:10]
+                if info_data.get("ath_date")
+                else None,
+                "ATL": f"${info_data.get('atl'):,.4f}"
+                if info_data.get("atl")
+                else None,
+                "Circulating Supply": f"{info_data.get('circulating_supply'):,.0f}"
+                if info_data.get("circulating_supply")
+                else None,
+                "Total Supply": f"{info_data.get('total_supply'):,.0f}"
+                if info_data.get("total_supply")
+                else None,
                 "Sentiment 👎": f"{info_data.get('sentiment_down') or 0:.1f}%",
             }
 

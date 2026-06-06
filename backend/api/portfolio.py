@@ -4,8 +4,11 @@ from sqlalchemy import select, delete
 from db.database import get_db
 from db.models import Trade, Watchlist, TradeAction, User
 from models.portfolio import (
-    TradeRequest, Portfolio, Position,
-    WatchlistItem, Trade as TradePydantic
+    TradeRequest,
+    Portfolio,
+    Position,
+    WatchlistItem,
+    Trade as TradePydantic,
 )
 from services.yahoo_finance import yahoo_finance
 from services.coingecko import coingecko
@@ -17,6 +20,7 @@ router = APIRouter(prefix="/portfolio", tags=["portfolio"])
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+
 async def fetch_current_price(ticker: str, asset_type: str) -> float:
     if asset_type == "crypto":
         result = await coingecko.get_price(ticker)
@@ -26,8 +30,7 @@ async def fetch_current_price(ticker: str, asset_type: str) -> float:
     price = result.get("price_usd") or result.get("price")
     if not price:
         raise HTTPException(
-            status_code=502,
-            detail=f"Could not fetch price for {ticker}"
+            status_code=502, detail=f"Could not fetch price for {ticker}"
         )
     return float(price)
 
@@ -66,21 +69,25 @@ def calculate_portfolio(trades: list, prices: dict) -> Portfolio:
         pnl = current_value - cost_basis
         pnl_percent = (pnl / cost_basis * 100) if cost_basis > 0 else 0.0
 
-        positions.append(Position(
-            ticker=h["ticker"],
-            asset_type=h["asset_type"],
-            quantity=round(h["quantity"], 6),
-            avg_buy_price=round(avg_buy_price, 4),
-            current_price=round(current_price, 4),
-            pnl=round(pnl, 2),
-            pnl_percent=round(pnl_percent, 2),
-        ))
+        positions.append(
+            Position(
+                ticker=h["ticker"],
+                asset_type=h["asset_type"],
+                quantity=round(h["quantity"], 6),
+                avg_buy_price=round(avg_buy_price, 4),
+                current_price=round(current_price, 4),
+                pnl=round(pnl, 2),
+                pnl_percent=round(pnl_percent, 2),
+            )
+        )
 
         total_invested += cost_basis
         total_current_value += current_value
 
     total_pnl = total_current_value - total_invested
-    total_pnl_percent = (total_pnl / total_invested * 100) if total_invested > 0 else 0.0
+    total_pnl_percent = (
+        (total_pnl / total_invested * 100) if total_invested > 0 else 0.0
+    )
 
     return Portfolio(
         positions=positions,
@@ -92,6 +99,7 @@ def calculate_portfolio(trades: list, prices: dict) -> Portfolio:
 
 
 # ── Trade endpoints ───────────────────────────────────────────────────────────
+
 
 @router.post("/trade", response_model=TradePydantic)
 async def execute_trade(
@@ -116,7 +124,7 @@ async def execute_trade(
         if request.quantity > total_held:
             raise HTTPException(
                 status_code=400,
-                detail=f"Cannot sell {request.quantity} — you only hold {round(total_held, 6)}"
+                detail=f"Cannot sell {request.quantity} — you only hold {round(total_held, 6)}",
             )
 
     trade = Trade(
@@ -195,6 +203,7 @@ async def delete_trade(
 
 # ── Portfolio ─────────────────────────────────────────────────────────────────
 
+
 @router.get("/", response_model=Portfolio)
 async def get_portfolio(
     current_user: User = Depends(get_current_user),
@@ -228,6 +237,7 @@ async def get_portfolio(
 
 # ── Watchlist ─────────────────────────────────────────────────────────────────
 
+
 @router.post("/watchlist", response_model=WatchlistItem)
 async def add_to_watchlist(
     item: WatchlistItem,
@@ -241,10 +251,12 @@ async def add_to_watchlist(
         )
     )
     if existing.scalar_one_or_none():
-        raise HTTPException(status_code=400, detail=f"{item.ticker} already in watchlist")
+        raise HTTPException(
+            status_code=400, detail=f"{item.ticker} already in watchlist"
+        )
 
     watchlist_item = Watchlist(
-        user_id=current_user.id,             
+        user_id=current_user.id,
         ticker=item.ticker.upper(),
         asset_type=item.asset_type,
         notes=item.notes,

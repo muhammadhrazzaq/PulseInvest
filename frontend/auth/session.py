@@ -22,10 +22,10 @@ def is_admin() -> bool:
 
 def save_auth(token: str, user_id: int, username: str, role: str, session_id: str):
     """Saves auth data to session state after login/register."""
-    st.session_state.token      = token
-    st.session_state.user_id    = user_id
-    st.session_state.username   = username
-    st.session_state.role       = role
+    st.session_state.token = token
+    st.session_state.user_id = user_id
+    st.session_state.username = username
+    st.session_state.role = role
     st.session_state.session_id = session_id
     st.session_state.chat_history = []
 

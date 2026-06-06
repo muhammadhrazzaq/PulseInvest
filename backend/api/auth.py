@@ -19,6 +19,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
 
+
 class RegisterRequest(BaseModel):
     email: EmailStr
     username: str
@@ -46,6 +47,7 @@ class UserResponse(BaseModel):
 
 # ── Register ──────────────────────────────────────────────────────────────────
 
+
 @router.post("/register", response_model=TokenResponse, status_code=201)
 async def register(request: RegisterRequest, db: AsyncSession = Depends(get_db)):
     """
@@ -69,7 +71,9 @@ async def register(request: RegisterRequest, db: AsyncSession = Depends(get_db))
 
     # validate password length
     if len(request.password) < 8:
-        raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+        raise HTTPException(
+            status_code=400, detail="Password must be at least 8 characters"
+        )
 
     # first user gets admin role automatically
     user_count = await db.execute(select(User))
@@ -107,10 +111,10 @@ async def register(request: RegisterRequest, db: AsyncSession = Depends(get_db))
 
 # ── Login ─────────────────────────────────────────────────────────────────────
 
+
 @router.post("/login", response_model=TokenResponse)
 async def login(
-    form: OAuth2PasswordRequestForm = Depends(),
-    db: AsyncSession = Depends(get_db)
+    form: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)
 ):
     """
     Login with username + password.
@@ -156,6 +160,7 @@ async def login(
 
 # ── Me ────────────────────────────────────────────────────────────────────────
 
+
 @router.get("/me", response_model=UserResponse)
 async def get_me(current_user: User = Depends(get_current_user)):
     """Returns the currently logged-in user's profile."""
@@ -171,6 +176,7 @@ async def get_me(current_user: User = Depends(get_current_user)):
 
 
 # ── Logout ────────────────────────────────────────────────────────────────────
+
 
 @router.post("/logout")
 async def logout(
@@ -193,6 +199,7 @@ async def logout(
 
 # ── Change password ───────────────────────────────────────────────────────────
 
+
 class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
@@ -208,7 +215,9 @@ async def change_password(
         raise HTTPException(status_code=400, detail="Current password is incorrect")
 
     if len(request.new_password) < 8:
-        raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+        raise HTTPException(
+            status_code=400, detail="Password must be at least 8 characters"
+        )
 
     current_user.hashed_password = hash_password(request.new_password)
     await db.flush()

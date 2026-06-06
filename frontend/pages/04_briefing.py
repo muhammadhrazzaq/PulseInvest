@@ -19,14 +19,12 @@ st.caption(f"{now.strftime('%A, %d %B %Y')} · {now.strftime('%H:%M')}")
 
 col1, col2 = st.columns([3, 1])
 with col2:
-    generate = st.button(
-        "Generate Briefing",
-        use_container_width=True,
-        type="primary"
-    )
+    generate = st.button("Generate Briefing", use_container_width=True, type="primary")
 
 with col1:
-    st.write("Get your daily AI-powered market summary based on your watchlist and portfolio.")
+    st.write(
+        "Get your daily AI-powered market summary based on your watchlist and portfolio."
+    )
 
 if "briefing" not in st.session_state:
     st.session_state.briefing = None
@@ -47,7 +45,6 @@ if generate:
 briefing = st.session_state.briefing
 
 if briefing:
-
     # ── AI summary ────────────────────────────────────────────────────────────
 
     st.divider()
@@ -82,14 +79,16 @@ if briefing:
         st.divider()
 
         # price change bar chart
-        df_prices = pd.DataFrame([
-            {
-                "Ticker": p["ticker"],
-                "Change %": round(p.get("change_24h") or 0, 2),
-                "Direction": "▲" if (p.get("change_24h") or 0) >= 0 else "▼",
-            }
-            for p in valid_prices
-        ])
+        df_prices = pd.DataFrame(
+            [
+                {
+                    "Ticker": p["ticker"],
+                    "Change %": round(p.get("change_24h") or 0, 2),
+                    "Direction": "▲" if (p.get("change_24h") or 0) >= 0 else "▼",
+                }
+                for p in valid_prices
+            ]
+        )
 
         if not df_prices.empty:
             fig = px.bar(
@@ -133,7 +132,9 @@ if briefing:
                     )
                     summary = article.get("summary")
                     if summary:
-                        st.write(summary[:200] + "..." if len(summary) > 200 else summary)
+                        st.write(
+                            summary[:200] + "..." if len(summary) > 200 else summary
+                        )
                 with col_link:
                     url = article.get("url")
                     if url:

@@ -31,7 +31,7 @@ with st.sidebar:
         requests.delete(
             f"{API_URL}/chat/history/{st.session_state.session_id}",
             headers=get_headers(),
-            timeout=5
+            timeout=5,
         )
         st.session_state.chat_history = []
         st.session_state.tools_log = []
@@ -78,10 +78,12 @@ for i, msg in enumerate(st.session_state.chat_history):
 
 if "pending_prompt" in st.session_state:
     prompt = st.session_state.pop("pending_prompt")
-    st.session_state.chat_history.append({
-        "role": "user",
-        "content": prompt,
-    })
+    st.session_state.chat_history.append(
+        {
+            "role": "user",
+            "content": prompt,
+        }
+    )
     with st.chat_message("user"):
         st.markdown(prompt)
 
@@ -109,20 +111,24 @@ if "pending_prompt" in st.session_state:
         if show_tools and tools_used:
             st.caption(f"🔧 Tools used: {', '.join(tools_used)}")
 
-    st.session_state.chat_history.append({
-        "role": "assistant",
-        "content": reply,
-    })
+    st.session_state.chat_history.append(
+        {
+            "role": "assistant",
+            "content": reply,
+        }
+    )
     st.session_state.tools_log.append(tools_used)
     st.rerun()
 
 # ── Chat input ────────────────────────────────────────────────────────────────
 
 if user_input := st.chat_input("Ask about any stock, crypto, or market concept..."):
-    st.session_state.chat_history.append({
-        "role": "user",
-        "content": user_input,
-    })
+    st.session_state.chat_history.append(
+        {
+            "role": "user",
+            "content": user_input,
+        }
+    )
 
     with st.chat_message("user"):
         st.markdown(user_input)
@@ -151,9 +157,11 @@ if user_input := st.chat_input("Ask about any stock, crypto, or market concept..
         if show_tools and tools_used:
             st.caption(f"🔧 Tools used: {', '.join(tools_used)}")
 
-    st.session_state.chat_history.append({
-        "role": "assistant",
-        "content": reply,
-    })
+    st.session_state.chat_history.append(
+        {
+            "role": "assistant",
+            "content": reply,
+        }
+    )
     st.session_state.tools_log.append(tools_used)
     st.rerun()

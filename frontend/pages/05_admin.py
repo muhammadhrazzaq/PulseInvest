@@ -12,6 +12,7 @@ st.title("👑 Admin Portal")
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+
 def api_get(path: str) -> dict | list:
     try:
         r = requests.get(f"{API_URL}{path}", headers=get_headers(), timeout=15)
@@ -40,11 +41,13 @@ def api_delete(path: str) -> bool:
 
 # ── Tabs ──────────────────────────────────────────────────────────────────────
 
-tab_stats, tab_users, tab_activity = st.tabs([
-    "📊 Platform Stats",
-    "👥 Users",
-    "📋 Activity Feed",
-])
+tab_stats, tab_users, tab_activity = st.tabs(
+    [
+        "📊 Platform Stats",
+        "👥 Users",
+        "📋 Activity Feed",
+    ]
+)
 
 # ── Platform stats ────────────────────────────────────────────────────────────
 
@@ -55,18 +58,18 @@ with tab_stats:
         st.subheader("Overview")
 
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Total Users",    stats.get("total_users", 0))
-        col2.metric("Active Users",   stats.get("active_users", 0))
-        col3.metric("Total Trades",   stats.get("total_trades", 0))
+        col1.metric("Total Users", stats.get("total_users", 0))
+        col2.metric("Active Users", stats.get("active_users", 0))
+        col3.metric("Total Trades", stats.get("total_trades", 0))
         col4.metric("Total Messages", stats.get("total_messages", 0))
 
         st.divider()
 
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Admin Users",     stats.get("admin_users", 0))
-        col2.metric("Total Sessions",  stats.get("total_sessions", 0))
+        col1.metric("Admin Users", stats.get("admin_users", 0))
+        col2.metric("Total Sessions", stats.get("total_sessions", 0))
         col3.metric("New Users Today", stats.get("new_users_today", 0))
-        col4.metric("Trades Today",    stats.get("new_trades_today", 0))
+        col4.metric("Trades Today", stats.get("new_trades_today", 0))
 
         st.divider()
 
@@ -89,21 +92,23 @@ with tab_users:
         st.info("No users found.")
     else:
         # summary table
-        df = pd.DataFrame([
-            {
-                "ID":        u["id"],
-                "Username":  u["username"],
-                "Email":     u["email"],
-                "Role":      u["role"],
-                "Active":    "✅" if u["is_active"] else "❌",
-                "Trades":    u["total_trades"],
-                "Messages":  u["total_messages"],
-                "Sessions":  u["total_sessions"],
-                "Joined":    str(u.get("created_at", ""))[:10],
-                "Last Login": str(u.get("last_login", "") or "Never")[:10],
-            }
-            for u in users
-        ])
+        df = pd.DataFrame(
+            [
+                {
+                    "ID": u["id"],
+                    "Username": u["username"],
+                    "Email": u["email"],
+                    "Role": u["role"],
+                    "Active": "✅" if u["is_active"] else "❌",
+                    "Trades": u["total_trades"],
+                    "Messages": u["total_messages"],
+                    "Sessions": u["total_sessions"],
+                    "Joined": str(u.get("created_at", ""))[:10],
+                    "Last Login": str(u.get("last_login", "") or "Never")[:10],
+                }
+                for u in users
+            ]
+        )
         st.dataframe(df, use_container_width=True, hide_index=True)
 
         st.divider()
@@ -121,9 +126,13 @@ with tab_users:
                 st.caption(selected["email"])
                 st.caption(f"Role: `{selected['role']}`")
                 st.caption(f"Active: {'✅' if selected['is_active'] else '❌'}")
-                st.caption(f"Trades: {selected['total_trades']} | Messages: {selected['total_messages']}")
+                st.caption(
+                    f"Trades: {selected['total_trades']} | Messages: {selected['total_messages']}"
+                )
                 st.caption(f"Joined: {str(selected.get('created_at', ''))[:10]}")
-                st.caption(f"Last login: {str(selected.get('last_login') or 'Never')[:10]}")
+                st.caption(
+                    f"Last login: {str(selected.get('last_login') or 'Never')[:10]}"
+                )
 
         with col2:
             with st.container(border=True):
@@ -132,12 +141,16 @@ with tab_users:
 
                 # disable / enable
                 if selected["is_active"]:
-                    if st.button("🚫 Disable Account", use_container_width=True, key="disable"):
+                    if st.button(
+                        "🚫 Disable Account", use_container_width=True, key="disable"
+                    ):
                         if api_patch(f"/admin/users/{uid}/disable"):
                             st.success(f"{selected['username']} disabled")
                             st.rerun()
                 else:
-                    if st.button("✅ Enable Account", use_container_width=True, key="enable"):
+                    if st.button(
+                        "✅ Enable Account", use_container_width=True, key="enable"
+                    ):
                         if api_patch(f"/admin/users/{uid}/enable"):
                             st.success(f"{selected['username']} enabled")
                             st.rerun()
@@ -146,12 +159,16 @@ with tab_users:
 
                 # promote / demote
                 if selected["role"] == "user":
-                    if st.button("👑 Promote to Admin", use_container_width=True, key="promote"):
+                    if st.button(
+                        "👑 Promote to Admin", use_container_width=True, key="promote"
+                    ):
                         if api_patch(f"/admin/users/{uid}/promote"):
                             st.success(f"{selected['username']} promoted to admin")
                             st.rerun()
                 else:
-                    if st.button("⬇️ Demote to User", use_container_width=True, key="demote"):
+                    if st.button(
+                        "⬇️ Demote to User", use_container_width=True, key="demote"
+                    ):
                         if api_patch(f"/admin/users/{uid}/demote"):
                             st.success(f"{selected['username']} demoted")
                             st.rerun()
@@ -159,7 +176,9 @@ with tab_users:
                 st.divider()
 
                 # view detail
-                if st.button("🔍 View Full Detail", use_container_width=True, key="detail"):
+                if st.button(
+                    "🔍 View Full Detail", use_container_width=True, key="detail"
+                ):
                     st.session_state.viewing_user_id = uid
                     st.rerun()
 
@@ -169,9 +188,14 @@ with tab_users:
                     st.warning("This permanently deletes the user and all their data.")
                     confirm = st.text_input(
                         f"Type '{selected['username']}' to confirm",
-                        key="delete_confirm"
+                        key="delete_confirm",
                     )
-                    if st.button("🗑️ Delete User", type="primary", use_container_width=True, key="delete"):
+                    if st.button(
+                        "🗑️ Delete User",
+                        type="primary",
+                        use_container_width=True,
+                        key="delete",
+                    ):
                         if confirm == selected["username"]:
                             if api_delete(f"/admin/users/{uid}"):
                                 st.success(f"{selected['username']} deleted")
@@ -199,14 +223,21 @@ with tab_users:
                         st.markdown("**Trade History**")
                         trades = detail.get("trades", [])
                         if trades:
-                            df_trades = pd.DataFrame([{
-                                "Ticker":  t["ticker"],
-                                "Action":  t["action"],
-                                "Qty":     t["quantity"],
-                                "Price":   f"${t['price_at_trade']:,.4f}",
-                                "Date":    str(t["created_at"])[:10],
-                            } for t in trades])
-                            st.dataframe(df_trades, use_container_width=True, hide_index=True)
+                            df_trades = pd.DataFrame(
+                                [
+                                    {
+                                        "Ticker": t["ticker"],
+                                        "Action": t["action"],
+                                        "Qty": t["quantity"],
+                                        "Price": f"${t['price_at_trade']:,.4f}",
+                                        "Date": str(t["created_at"])[:10],
+                                    }
+                                    for t in trades
+                                ]
+                            )
+                            st.dataframe(
+                                df_trades, use_container_width=True, hide_index=True
+                            )
                         else:
                             st.info("No trades yet.")
 
@@ -214,12 +245,19 @@ with tab_users:
                         st.markdown("**Watchlist**")
                         watchlist = detail.get("watchlist", [])
                         if watchlist:
-                            df_watch = pd.DataFrame([{
-                                "Ticker": w["ticker"],
-                                "Type":   w["asset_type"],
-                                "Notes":  w.get("notes") or "",
-                            } for w in watchlist])
-                            st.dataframe(df_watch, use_container_width=True, hide_index=True)
+                            df_watch = pd.DataFrame(
+                                [
+                                    {
+                                        "Ticker": w["ticker"],
+                                        "Type": w["asset_type"],
+                                        "Notes": w.get("notes") or "",
+                                    }
+                                    for w in watchlist
+                                ]
+                            )
+                            st.dataframe(
+                                df_watch, use_container_width=True, hide_index=True
+                            )
                         else:
                             st.info("Empty watchlist.")
 

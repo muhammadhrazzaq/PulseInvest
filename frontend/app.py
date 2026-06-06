@@ -24,15 +24,15 @@ with st.sidebar:
         st.caption("👑 Admin")
     st.divider()
 
-    st.page_link("app.py",                  label="Home",             icon="🏠")
-    st.page_link("pages/01_dashboard.py",   label="Dashboard",        icon="📊")
-    st.page_link("pages/02_research.py",    label="Research",         icon="🔍")
-    st.page_link("pages/03_chat.py",        label="Chat",             icon="💬")
-    st.page_link("pages/04_briefing.py",    label="Morning Briefing", icon="☀️")
+    st.page_link("app.py", label="Home", icon="🏠")
+    st.page_link("pages/01_dashboard.py", label="Dashboard", icon="📊")
+    st.page_link("pages/02_research.py", label="Research", icon="🔍")
+    st.page_link("pages/03_chat.py", label="Chat", icon="💬")
+    st.page_link("pages/04_briefing.py", label="Morning Briefing", icon="☀️")
 
     if is_admin():
         st.divider()
-        st.page_link("pages/05_admin.py",   label="Admin Portal",     icon="👑")
+        st.page_link("pages/05_admin.py", label="Admin Portal", icon="👑")
 
     st.divider()
     if st.button("Logout", use_container_width=True):
@@ -58,10 +58,12 @@ Your AI-powered investment research assistant.
 
 col1, col2, col3, col4 = st.columns(4)
 with col1:
-    st.page_link("pages/01_dashboard.py", label="📊 Dashboard",        use_container_width=True)
+    st.page_link(
+        "pages/01_dashboard.py", label="📊 Dashboard", use_container_width=True
+    )
 with col2:
-    st.page_link("pages/02_research.py",  label="🔍 Research",         use_container_width=True)
+    st.page_link("pages/02_research.py", label="🔍 Research", use_container_width=True)
 with col3:
-    st.page_link("pages/03_chat.py",      label="💬 Chat",             use_container_width=True)
+    st.page_link("pages/03_chat.py", label="💬 Chat", use_container_width=True)
 with col4:
-    st.page_link("pages/04_briefing.py",  label="☀️ Briefing",         use_container_width=True)
+    st.page_link("pages/04_briefing.py", label="☀️ Briefing", use_container_width=True)

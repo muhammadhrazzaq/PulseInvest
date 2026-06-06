@@ -5,13 +5,19 @@ from langchain_core.messages import HumanMessage, AIMessage
 from models.chat import ChatRequest, ChatResponse
 from services.agent import run_agent
 from db.database import get_db
-from db.models import User, Session as DBSession, ChatMessage, MessageRole as DBMessageRole
+from db.models import (
+    User,
+    Session as DBSession,
+    ChatMessage,
+    MessageRole as DBMessageRole,
+)
 from services.auth import get_current_user
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
 
 async def get_or_create_session(
     session_id: str,
@@ -35,7 +41,9 @@ async def get_or_create_session(
 
     # security check — session must belong to this user
     if session.user_id != user.id:
-        raise HTTPException(status_code=403, detail="Session does not belong to this user")
+        raise HTTPException(
+            status_code=403, detail="Session does not belong to this user"
+        )
 
     return session
 
@@ -85,6 +93,7 @@ async def save_message(
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
 
+
 @router.post("/", response_model=ChatResponse)
 async def chat(
     request: ChatRequest,
@@ -95,9 +104,7 @@ async def chat(
     Main chat endpoint.
     Loads history from DB, runs agent, saves both messages back to DB.
     """
-    session = await get_or_create_session(
-        request.session_id, current_user, db
-    )
+    session = await get_or_create_session(request.session_id, current_user, db)
 
     # load history from DB — ignore history sent from frontend
     # DB is the single source of truth
@@ -172,7 +179,7 @@ async def get_history(
                 "created_at": str(m.created_at),
             }
             for m in messages
-        ]
+        ],
     }
 
 

@@ -10,31 +10,29 @@ from db.database import get_db, settings
 from db.models import User, UserRole
 import bcrypt
 
-SECRET_KEY       = settings.secret_key
-ALGORITHM        = "HS256"
+SECRET_KEY = settings.secret_key
+ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24 hours
 
-pwd_context      = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme    = OAuth2PasswordBearer(tokenUrl="/auth/login")
-
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(
-        password.encode("utf-8")[:72],
-        bcrypt.gensalt()
-    ).decode("utf-8")
+    return bcrypt.hashpw(password.encode("utf-8")[:72], bcrypt.gensalt()).decode(
+        "utf-8"
+    )
+
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return bcrypt.checkpw(
-        plain.encode("utf-8")[:72],
-        hashed.encode("utf-8")
-    )
+    return bcrypt.checkpw(plain.encode("utf-8")[:72], hashed.encode("utf-8"))
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire = datetime.utcnow() + (
+        expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -48,7 +46,6 @@ def decode_token(token: str) -> dict:
             detail="Invalid or expired token",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
 
 
 async def get_current_user(
@@ -96,7 +93,9 @@ async def get_current_admin(
 
 
 async def get_optional_user(
-    token: Optional[str] = Depends(OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)),
+    token: Optional[str] = Depends(
+        OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)
+    ),
     db: AsyncSession = Depends(get_db),
 ) -> Optional[User]:
     """

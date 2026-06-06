@@ -38,7 +38,7 @@ def show_login_page():
                     try:
                         r = requests.post(
                             f"{API_URL}/auth/login",
-                            data={                       # form-encoded not JSON
+                            data={  # form-encoded not JSON
                                 "username": username,
                                 "password": password,
                             },
@@ -66,11 +66,11 @@ def show_login_page():
         st.subheader("Create account")
 
         with st.form("register_form"):
-            reg_email    = st.text_input("Email")
+            reg_email = st.text_input("Email")
             reg_username = st.text_input("Username")
             reg_password = st.text_input("Password", type="password")
-            reg_confirm  = st.text_input("Confirm password", type="password")
-            submitted    = st.form_submit_button(
+            reg_confirm = st.text_input("Confirm password", type="password")
+            submitted = st.form_submit_button(
                 "Register",
                 use_container_width=True,
                 type="primary",
@@ -105,7 +105,9 @@ def show_login_page():
                                 session_id=data["session_id"],
                             )
                             if data["role"] == "admin":
-                                st.success("Account created! You are the first user — admin access granted.")
+                                st.success(
+                                    "Account created! You are the first user — admin access granted."
+                                )
                             else:
                                 st.success(f"Welcome, {data['username']}!")
                             st.rerun()

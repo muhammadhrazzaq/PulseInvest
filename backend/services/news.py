@@ -3,8 +3,8 @@ from newsapi import NewsApiClient
 from db.database import settings
 from datetime import datetime, timedelta
 
-class NewsService:
 
+class NewsService:
     def __init__(self):
         self.newsapi = NewsApiClient(api_key=settings.news_api_key)
 
@@ -41,7 +41,9 @@ class NewsService:
         Good for background research on a ticker.
         """
         try:
-            from_date = (datetime.today() - timedelta(days=days_back)).strftime("%Y-%m-%d")
+            from_date = (datetime.today() - timedelta(days=days_back)).strftime(
+                "%Y-%m-%d"
+            )
             response = self.newsapi.get_everything(
                 q=query,
                 from_param=from_date,
@@ -100,8 +102,7 @@ class NewsService:
         """
         try:
             results = self.search_duckduckgo(
-                "stock market crypto financial news today",
-                max_results=6
+                "stock market crypto financial news today", max_results=6
             )
             return results
         except Exception as e:
@@ -129,5 +130,6 @@ class NewsService:
             )
 
         return "\n\n".join(formatted)
+
 
 news_service = NewsService()

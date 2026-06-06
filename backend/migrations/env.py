@@ -16,7 +16,7 @@ config = context.config
 # set DB url from pydantic settings — swap asyncpg for psycopg2
 config.set_main_option(
     "sqlalchemy.url",
-    settings.database_url.replace("postgresql+asyncpg", "postgresql+psycopg2")
+    settings.database_url.replace("postgresql+asyncpg", "postgresql+psycopg2"),
 )
 
 # logging

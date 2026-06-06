@@ -1,26 +1,26 @@
 """
 MessageRole -
-enum Restricts role values to exactly user, assistant, 
-or system. Using an enum instead of 
-plain string means if you typo "assitant" somewhere, 
+enum Restricts role values to exactly user, assistant,
+or system. Using an enum instead of
+plain string means if you typo "assitant" somewhere,
 Pydantic throws an error immediately rather than silently passing garbage to model.
 
 Message -
-The atomic unit of conversation. Every message has a 
-role and content. This maps directly to what the Groq 
+The atomic unit of conversation. Every message has a
+role and content. This maps directly to what the Groq
 
-API expects — so you can pass a list[Message] straight into 
+API expects — so you can pass a list[Message] straight into
 the API call without reformatting.
 
 ChatRequest
 What Streamlit sends to FastAPI when the user hits send:
 
 message — the new user input
-session_id — ties the conversation to a user session 
+session_id — ties the conversation to a user session
 so multiple browser tabs don't bleed into each other
 
-history — the full prior conversation, because Groq 
-(like all LLMs) is stateless. Every call must include 
+history — the full prior conversation, because Groq
+(like all LLMs) is stateless. Every call must include
 the full history or it forgets everything.
 
 ChatResponse
@@ -33,23 +33,26 @@ tools_used — which tools the LangChain agent called
 
 """
 
-
 from pydantic import BaseModel
 from enum import Enum
+
 
 class MessageRole(str, Enum):
     user = "user"
     assistant = "assistant"
     system = "system"
 
+
 class Message(BaseModel):
     role: MessageRole
     content: str
+
 
 class ChatRequest(BaseModel):
     message: str
     session_id: str
     history: list[Message] = []
+
 
 class ChatResponse(BaseModel):
     reply: str
