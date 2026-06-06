@@ -48,7 +48,7 @@ jobs:
 
       - name: Create .env for CI  
         run: |
-          echo "DATABASE_URL=postgresql+asyncpg://pulse:pulse@localhost:5432/pulse_invest_test" > .env
+          echo "DATABASE_URL=postgresql+asyncpg://pulse:pulse@localhost:5432/pulse_invest" > .env
           echo "GROQ_API_KEY=dummy" >> .env
           echo "NEWS_API_KEY=dummy" >> .env
           echo "SECRET_KEY=ci-secret-key-not-real" >> .env
