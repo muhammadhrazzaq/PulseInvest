@@ -4,7 +4,7 @@
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red)
 ![LangChain](https://img.shields.io/badge/LangChain-latest-yellow)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Stars](https://img.shields.io/github/stars/yourname/PulseInvest?style=social)
+![Stars](https://img.shields.io/github/stars/muhammadhrazzaq/PulseInvest?style=social)
 
 AI-powered investment research assistant built with FastAPI, Streamlit, LangChain, and Groq.
 
