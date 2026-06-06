@@ -46,6 +46,7 @@ build-backend = "hatchling.build"
 dev-dependencies = [
     "pytest",
     "pytest-asyncio",
+    "ruff>=0.15.16",
 ]
 
 [tool.hatch.build.targets.wheel]
