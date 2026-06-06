@@ -1,6 +1,5 @@
 import streamlit as st
 import requests
-import plotly.express as px
 import pandas as pd
 from auth.session import require_admin, get_headers
 

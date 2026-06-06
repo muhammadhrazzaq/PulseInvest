@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
@@ -57,7 +57,7 @@ async def get_stats(
 
     # counts
     total_users     = await db.execute(select(func.count(User.id)))
-    active_users    = await db.execute(select(func.count(User.id)).where(User.is_active == True))
+    active_users = await db.execute(select(func.count(User.id)).where(User.is_active))
     admin_users     = await db.execute(select(func.count(User.id)).where(User.role == UserRole.admin))
     total_trades    = await db.execute(select(func.count(Trade.id)))
     total_messages  = await db.execute(select(func.count(ChatMessage.id)))

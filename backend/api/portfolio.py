@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
 from db.database import get_db
-from db.models import Trade, Watchlist, AssetType, TradeAction, User
+from db.models import Trade, Watchlist, TradeAction, User
 from models.portfolio import (
     TradeRequest, Portfolio, Position,
     WatchlistItem, Trade as TradePydantic

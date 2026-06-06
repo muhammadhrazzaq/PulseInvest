@@ -35,7 +35,6 @@ tools_used — which tools the LangChain agent called
 
 
 from pydantic import BaseModel
-from typing import Optional
 from enum import Enum
 
 class MessageRole(str, Enum):

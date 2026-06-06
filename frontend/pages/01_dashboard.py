@@ -32,7 +32,7 @@ def get_trades():
     try:
         r = requests.get(f"{API_URL}/portfolio/trades", headers=get_headers(), timeout=10)
         return r.json()
-    except Exception as e:
+    except Exception:
         return []
 
 # ── Portfolio summary ─────────────────────────────────────────────────────────

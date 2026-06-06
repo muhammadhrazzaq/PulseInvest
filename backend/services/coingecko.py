@@ -1,5 +1,5 @@
 import httpx
-from datetime import datetime, timedelta
+from datetime import datetime
 
 COINGECKO_BASE = "https://api.coingecko.com/api/v3"
 

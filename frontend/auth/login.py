@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-from auth.session import save_auth, is_logged_in
+from auth.session import save_auth
 
 API_URL = "http://localhost:8000"
 

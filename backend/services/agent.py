@@ -9,7 +9,6 @@ from db.database import settings
 from services.yahoo_finance import yahoo_finance
 from services.coingecko import coingecko
 from services.news import news_service
-from langchain_core.messages import HumanMessage
 
 
 # ── LLM ──────────────────────────────────────────────────────────────────────

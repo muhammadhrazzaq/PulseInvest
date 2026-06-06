@@ -1,4 +1,3 @@
-import httpx
 from ddgs import DDGS
 from newsapi import NewsApiClient
 from db.database import settings

@@ -1,5 +1,5 @@
 import streamlit as st
-from auth.session import is_logged_in, is_admin, logout, require_auth
+from auth.session import is_logged_in, is_admin, logout
 from auth.login import show_login_page
 
 st.set_page_config(
